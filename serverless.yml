@@ -1,0 +1,72 @@
+service: todo-app
+
+frameworkVersion: '2'
+
+plugins:
+  - serverless-export-env
+  - serverless-iam-roles-per-function
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      migrate: true
+      sharedDb: true
+      convertEmptyValues: true
+      noStart: true
+    migration:
+      dir: offline/migrations
+
+  export-env:
+    overwrite: true
+    enableOffline: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: ap-southeast-1
+  profile: serverlessadmin
+  environment:
+    DYNAMODB_TABLE_NAME: ${self:service}-${opt:stage, self:provider.stage}
+    TODO_APP_PK: ${self:service}
+    DYNAMODB_ARN: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME}'
+  # iam:
+  #   role:
+  #     statements:
+  #       - Effect: Allow
+  #         Action:
+  #           - dynamodb:Query
+  #           - dynamodb:Scan
+  #           - dynamodb:GetItem
+  #           - dynamodb:PutItem
+  #           - dynamodb:UpdateItem
+  #           - dynamodb:DeleteItem
+  #         Resource: ${self:provider.environment.DYNAMODB_ARN}
+
+functions:
+  graphql:
+    handler: src/handler.handler
+    events:
+      - http:
+          path: graphql
+          method: post
+          cors: true
+  # - ${file(./config/functions/createTodo.yml)}
+  # - ${file(./config/functions/listTodo.yml)}
+  # - ${file(./config/functions/deleteTodo.yml)}
+  # - ${file(./config/functions/updateTodo.yml)}
+  # - ${file(./config/functions/getTodo.yml)}
+
+resources:
+  - ${file(./config/resources/todoTable.yml)}
+  # - ${file(./config/resources/createTodoRole.yml)}
+  # - ${file(./config/resources/deleteTodoRole.yml)}
+  # - ${file(./config/resources/getTodoRole.yml)}
+  # - ${file(./config/resources/listTodoRole.yml)}
+  # - ${file(./config/resources/updateTodoRole.yml)}
