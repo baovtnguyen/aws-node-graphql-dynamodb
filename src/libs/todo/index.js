@@ -1,16 +1,14 @@
 const { v4: uuidv4 } = require('uuid');
 
-const dynamodb = require('../dynamodb/dynamodb');
+const dynamodb = require('../dynamodb');
 const { DYNAMODB_TABLE_NAME, TODO_APP_PK } = require('../env');
 
-const { CONTENT_KEY, COMPLETED_KEY } = require('./todoValidator');
-
 class Todo {
-  constructor(data) {
+  constructor({ content, completed }) {
     this.pk = TODO_APP_PK;
     this.sk = uuidv4();
-    this.content = data.content;
-    this.completed = data.completed ? data.completed : false;
+    this.content = content;
+    this.completed = completed;
   }
 
   async save() {
@@ -38,20 +36,20 @@ class Todo {
     return dynamodb.get(params).promise();
   }
 
-  static async updateOne(sk, data) {
+  static async updateOne(sk, { content, completed }) {
     const updateAttributes = [];
     const expressionAttributeNames = {};
     const expressionAttributeValues = {};
 
-    if (data.content !== undefined) {
+    if (content !== undefined) {
       updateAttributes.push('#content = :content');
-      expressionAttributeNames['#content'] = CONTENT_KEY;
-      expressionAttributeValues[':content'] = data.content;
+      expressionAttributeNames['#content'] = 'content';
+      expressionAttributeValues[':content'] = content;
     }
-    if (data.completed !== undefined) {
+    if (completed !== undefined) {
       updateAttributes.push('#completed = :completed');
-      expressionAttributeNames['#completed'] = COMPLETED_KEY;
-      expressionAttributeValues[':completed'] = data.completed;
+      expressionAttributeNames['#completed'] = 'completed';
+      expressionAttributeValues[':completed'] = completed;
     }
 
     const updateExpression = 'SET ' + updateAttributes.join(',');
@@ -80,6 +78,7 @@ class Todo {
         sk,
       },
       ConditionExpression: 'attribute_exists(pk) AND attribute_exists(sk)',
+      ReturnValues: 'ALL_OLD',
     };
 
     return dynamodb.delete(params).promise();

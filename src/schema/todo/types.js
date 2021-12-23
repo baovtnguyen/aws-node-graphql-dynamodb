@@ -1,17 +1,20 @@
 const TodoTypes = `
   type Todo {
     pk: String!
-    sk: String!
+    sk: ID!
     content: String!
     completed: Boolean!
   }
 
   extend type Query {
-    greeting: String
+    getTodos: [Todo!]!
+    getTodo(sk: ID!): Todo
   }
 
   extend type Mutation {
-    createUser(name: String): String
+    createTodo(content: String!, completed: Boolean): Todo!
+    deleteTodo(sk: ID!): Todo!
+    updateTodo(sk: ID!, content: String, completed: Boolean): Todo!
   }
 `
 

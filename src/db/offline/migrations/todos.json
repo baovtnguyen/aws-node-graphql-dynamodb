@@ -1,21 +1,27 @@
 {
-  "Table": {
-    "TableName": "todo-app-offline-dev",
-    "KeySChema": [
-      {
-        "AttributeName": "ID",
-        "KeyType": "HASH"
-      }
-    ],
-    "AttributeDefinitions": [
-      {
-        "AttributeName": "ID",
-        "AttributeType": "S"
-      }
-    ],
-    "ProvisionedThroughput": {
-      "ReadCapacityUnits": 1,
-      "WriteCapacityUnits": 1
+  "TableName": "todo-app-dev",
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "pk",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "sk",
+      "AttributeType": "S"
     }
+  ],
+  "KeySchema": [
+    {
+      "AttributeName": "pk",
+      "KeyType": "HASH"
+    },
+    {
+      "AttributeName": "sk",
+      "KeyType": "RANGE"
+    }
+  ],
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 1,
+    "WriteCapacityUnits": 1
   }
 }

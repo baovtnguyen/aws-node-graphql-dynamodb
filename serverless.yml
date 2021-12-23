@@ -3,10 +3,14 @@ service: todo-app
 frameworkVersion: '2'
 
 plugins:
+  # - serverless-webpack
   - serverless-export-env
   - serverless-iam-roles-per-function
   - serverless-dynamodb-local
   - serverless-offline
+
+# package:
+#   individually: true
 
 custom:
   dynamodb:
@@ -19,7 +23,7 @@ custom:
       convertEmptyValues: true
       noStart: true
     migration:
-      dir: offline/migrations
+      dir: src/db/offline/migrations
 
   export-env:
     overwrite: true
@@ -36,37 +40,9 @@ provider:
     DYNAMODB_TABLE_NAME: ${self:service}-${opt:stage, self:provider.stage}
     TODO_APP_PK: ${self:service}
     DYNAMODB_ARN: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME}'
-  # iam:
-  #   role:
-  #     statements:
-  #       - Effect: Allow
-  #         Action:
-  #           - dynamodb:Query
-  #           - dynamodb:Scan
-  #           - dynamodb:GetItem
-  #           - dynamodb:PutItem
-  #           - dynamodb:UpdateItem
-  #           - dynamodb:DeleteItem
-  #         Resource: ${self:provider.environment.DYNAMODB_ARN}
 
 functions:
-  graphql:
-    handler: src/handler.handler
-    events:
-      - http:
-          path: graphql
-          method: post
-          cors: true
-  # - ${file(./config/functions/createTodo.yml)}
-  # - ${file(./config/functions/listTodo.yml)}
-  # - ${file(./config/functions/deleteTodo.yml)}
-  # - ${file(./config/functions/updateTodo.yml)}
-  # - ${file(./config/functions/getTodo.yml)}
+  - ${file(./config/functions/graphql.yml)}
 
 resources:
   - ${file(./config/resources/todoTable.yml)}
-  # - ${file(./config/resources/createTodoRole.yml)}
-  # - ${file(./config/resources/deleteTodoRole.yml)}
-  # - ${file(./config/resources/getTodoRole.yml)}
-  # - ${file(./config/resources/listTodoRole.yml)}
-  # - ${file(./config/resources/updateTodoRole.yml)}

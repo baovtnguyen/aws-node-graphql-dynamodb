@@ -5,7 +5,7 @@ const {
   TodoQuery,
   TodoMutation,
   TodoResolvers,
-} = require('./todo/index');
+} = require('./todo');
 
 const typeDefs = gql`
   type Query

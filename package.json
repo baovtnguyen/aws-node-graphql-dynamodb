@@ -2,8 +2,8 @@
   "name": "todo-app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
+    "dev": "sls offline start",
     "test": "jest --runInBand"
   },
   "keywords": [],
@@ -15,15 +15,18 @@
     "graphql": "^16.2.0",
     "http-status-codes": "^2.1.4",
     "moment": "^2.29.1",
-    "serverless-dynamodb-local": "^0.2.35",
+    "request": "^2.88.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "serverless-dynamodb-local": "^0.2.35",
     "aws-sdk": "^2.1046.0",
     "jest": "^27.4.5",
-    "serverless-aws-documentation": "^1.1.0",
     "serverless-export-env": "github:arabold/serverless-export-env",
     "serverless-iam-roles-per-function": "^3.2.0",
-    "serverless-offline": "^8.3.1"
+    "serverless-offline": "^8.3.1",
+    "serverless-webpack": "^5.6.0",
+    "webpack": "^5.65.0",
+    "webpack-node-externals": "^3.0.0"
   }
 }
