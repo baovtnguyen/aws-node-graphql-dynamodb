@@ -1,18 +1,18 @@
 const Todo = require('../../libs/todo');
 
 const TodoMutation = {
-  createTodo: async (parent, { content, completed = false }, context, info) => {
-    const todo = new Todo({ content, completed });
+  createTodo: async (parent, { todo }, context, info) => {
+    const newTodo = new Todo({ ...todo });
     try {
-      await todo.save();
-      return todo;
+      await newTodo.save();
+      return newTodo;
     } catch (err) {
       return err;
     }
   },
-  updateTodo: async (parent, { sk, content, completed }, context, info) => {
+  updateTodo: async (parent, { sk, content, isCompleted }, context, info) => {
     try {
-      const res = await Todo.updateOne(sk, { content, completed });
+      const res = await Todo.updateOne(sk, { content, isCompleted });
       return res.Attributes;
     } catch (err) {
       return err;
@@ -26,6 +26,10 @@ const TodoMutation = {
       return err;
     }
   },
+  deleteAll: async () => {
+    await Todo.deleteAll();
+    return 'Deleted All'
+  }
 };
 
 module.exports = {

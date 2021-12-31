@@ -4,11 +4,11 @@ const dynamodb = require('../dynamodb');
 const { DYNAMODB_TABLE_NAME, TODO_APP_PK } = require('../env');
 
 class Todo {
-  constructor({ content, completed }) {
+  constructor({ content, isCompleted }) {
     this.pk = TODO_APP_PK;
     this.sk = uuidv4();
     this.content = content;
-    this.completed = completed;
+    this.isCompleted = isCompleted;
   }
 
   async save() {
@@ -36,7 +36,7 @@ class Todo {
     return dynamodb.get(params).promise();
   }
 
-  static async updateOne(sk, { content, completed }) {
+  static async updateOne(sk, { content, isCompleted }) {
     const updateAttributes = [];
     const expressionAttributeNames = {};
     const expressionAttributeValues = {};
@@ -46,10 +46,10 @@ class Todo {
       expressionAttributeNames['#content'] = 'content';
       expressionAttributeValues[':content'] = content;
     }
-    if (completed !== undefined) {
-      updateAttributes.push('#completed = :completed');
-      expressionAttributeNames['#completed'] = 'completed';
-      expressionAttributeValues[':completed'] = completed;
+    if (isCompleted !== undefined) {
+      updateAttributes.push('#isCompleted = :isCompleted');
+      expressionAttributeNames['#isCompleted'] = 'isCompleted';
+      expressionAttributeValues[':isCompleted'] = isCompleted;
     }
 
     const updateExpression = 'SET ' + updateAttributes.join(',');
@@ -98,10 +98,27 @@ class Todo {
 
   static async deleteAll() {
     const res = await Todo.findAll();
-    const todos = res.Items;
-    for (const todo of todos) {
-      await Todo.deleteOne(todo.sk);
+    for(const todo of res.Items) {
+      await Todo.deleteOne(todo.sk)
     }
+    // const todos = res.Items.map((item) => {
+    //   return {
+    //     DeleteRequest: {
+    //       Key: {
+    //         pk: item.pk,
+    //         sk: item.sk,
+    //       },
+    //     },
+    //   };
+    // });
+
+    // const params = {
+    //   RequestItems: {
+    //     [DYNAMODB_TABLE_NAME]: todos,
+    //   },
+    // };
+    // // limited by 25 items
+    // await dynamodb.batchWrite(params).promise();
   }
 }
 

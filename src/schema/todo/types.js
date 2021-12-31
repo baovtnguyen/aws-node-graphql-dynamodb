@@ -3,18 +3,24 @@ const TodoTypes = `
     pk: String!
     sk: ID!
     content: String!
-    completed: Boolean!
+    isCompleted: Boolean!
+  }
+
+  input TodoInput {
+    content: String!
+    isCompleted: Boolean = false
   }
 
   extend type Query {
     getTodos: [Todo!]!
-    getTodo(sk: ID!): Todo
+    getTodo(sk: ID!): Todo!
   }
 
   extend type Mutation {
-    createTodo(content: String!, completed: Boolean): Todo!
+    createTodo(todo: TodoInput!): Todo!
     deleteTodo(sk: ID!): Todo!
-    updateTodo(sk: ID!, content: String, completed: Boolean): Todo!
+    updateTodo(sk: ID!, content: String, isCompleted: Boolean): Todo!
+    deleteAll: String
   }
 `
 
