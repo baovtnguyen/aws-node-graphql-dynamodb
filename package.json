@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "sls offline start",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand --verbose"
   },
   "keywords": [],
   "author": "",

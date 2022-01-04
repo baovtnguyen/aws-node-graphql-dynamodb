@@ -101,24 +101,6 @@ class Todo {
     for(const todo of res.Items) {
       await Todo.deleteOne(todo.sk)
     }
-    // const todos = res.Items.map((item) => {
-    //   return {
-    //     DeleteRequest: {
-    //       Key: {
-    //         pk: item.pk,
-    //         sk: item.sk,
-    //       },
-    //     },
-    //   };
-    // });
-
-    // const params = {
-    //   RequestItems: {
-    //     [DYNAMODB_TABLE_NAME]: todos,
-    //   },
-    // };
-    // // limited by 25 items
-    // await dynamodb.batchWrite(params).promise();
   }
 }
 
