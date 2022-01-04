@@ -11,6 +11,7 @@ beforeAll(async () => {
 });
 
 test('should create a new todo', async () => {
+  // Arrange
   const mutation = `
     mutation CreateTodo($todo: TodoInput!) {
       createTodo(todo: $todo) {
@@ -29,12 +30,16 @@ test('should create a new todo', async () => {
     },
   };
 
+  // Act
   let result = await server.executeOperation({ query: mutation, variables });
   result = JSON.parse(JSON.stringify(result));
+
+  // Assert
   expect(result.data?.createTodo.content).toEqual(CONTENT);
 });
 
 test('should throw an error create a new todo with invalid input', async () => {
+  // Arrange
   const mutation = `
     mutation CreateTodo($todo: TodoInput!) {
       createTodo(todo: $todo) {
@@ -53,7 +58,10 @@ test('should throw an error create a new todo with invalid input', async () => {
     },
   };
 
+  // Act
   let result = await server.executeOperation({ query: mutation, variables });
   result = JSON.parse(JSON.stringify(result));
+
+  // Assert
   expect(result.errors).not.toBeUndefined();
 });
